@@ -1,4 +1,4 @@
-mouse_strain;experiment_ID;sample_type;timepoint;mouse_ID;treatment;frequency_live_bacteria_%;experimental_day;counts_live_bacteria_per_wet_g;mouse_age_days;mouse_sex
+mouse_strain,experiment_ID,sample_type,timepoint,mouse_ID,treatment,frequency_live_bacteria_%,experimental_day,counts_live_bacteria_per_wet_g,mouse_age_days,mouse_sex
 NOD;AG6-222;fecal;treatment_start;ABX017;ABX;76.90;-7;1.11E+10;14;male
 NOD;AG6-222;fecal;treatment_start;ABX018;ABX;69.10;-7;3.83E+09;14;male
 NOD;AG6-222;fecal;treatment_start;ABX019;ABX;58.60;-7;5.36E+09;14;male
