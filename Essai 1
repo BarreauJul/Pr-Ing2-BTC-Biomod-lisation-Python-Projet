@@ -1,0 +1,8 @@
+import pandas as pd
+
+# Read the CSV file into a DataFrame
+df = pd.read_csv('data_real.csv')
+
+# Access data in the DataFrame using column names or indexing
+print(df['counts_live_bacteria_per_wet_g'])
+print(df.iloc[0])  # Access first row
