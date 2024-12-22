@@ -48,5 +48,5 @@ for treatment in unique_treatments:
     plt.xlabel('Jour')
     plt.ylabel('Quantité de Bactéries Vivantes par Gramme Humide')
     plt.legend()
-    plt.savefig(f'plot_treatment_{treatment}.png')
+    plt.savefig(f'images/plot_treatment_{treatment}.png')
     plt.show()
