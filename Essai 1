@@ -1,8 +1,52 @@
-import pandas as pd
+# Import necessary modules
+import csv
+import matplotlib.pyplot as plt
 
-# Read the CSV file into a DataFrame
-df = pd.read_csv('data_real.csv')
+# Open the input CSV file
+input_file = open("data_real.csv")
+data_input = csv.reader(input_file)
 
-# Access data in the DataFrame using column names or indexing
-print(df['counts_live_bacteria_per_wet_g'])
-print(df.iloc[0])  # Access first row
+# Read the header
+header = next(data_input)
+print(header)
+
+# Initialize lists to store filtered data
+mouse_ids = []
+treatments = []
+days = []
+bacteria_counts = []
+
+# Filter rows to keep only the measurements in feces and select relevant columns
+for row in data_input:
+    if len(row) >= 9 and row[2] == 'fecal':  # Ensure the row has at least 9 columns and filter by 'sample_type'
+        mouse_ids.append(row[4])  # 'mouse_ID' is the 5th column
+        treatments.append(row[5])  # 'treatment' is the 6th column
+        days.append(int(row[7]))  # 'experimental_day' is the 8th column
+        bacteria_counts.append(float(row[8]))  # 'counts_live_bacteria_per_wet_g' is the 9th column
+
+# Close the input file
+input_file.close()
+
+# Open the existing filtered data CSV file in append mode
+with open('output/filtered_data.csv', 'a', newline='') as output_file:
+    writer = csv.writer(output_file)
+    for i in range(len(mouse_ids)):
+        writer.writerow([mouse_ids[i], treatments[i], days[i], bacteria_counts[i]])
+
+# Generate a line plot for each mouse ID, grouped by treatment
+unique_treatments = set(treatments)
+for treatment in unique_treatments:
+    plt.figure()
+    unique_mouse_ids = set(mouse_ids)
+    for mouse_id in unique_mouse_ids:
+        x = [days[i] for i in range(len(mouse_ids)) if mouse_ids[i] == mouse_id and treatments[i] == treatment]
+        y = [bacteria_counts[i] for i in range(len(mouse_ids)) if mouse_ids[i] == mouse_id and treatments[i] == treatment]
+        if x:
+            plt.plot(x, y, label=f'Souris {mouse_id}')
+    
+    plt.title(f'Traitement: {treatment}')
+    plt.xlabel('Jour')
+    plt.ylabel('Quantité de Bactéries Vivantes par Gramme Humide')
+    plt.legend()
+    plt.savefig(f'plot_treatment_{treatment}.png')
+    plt.show()
