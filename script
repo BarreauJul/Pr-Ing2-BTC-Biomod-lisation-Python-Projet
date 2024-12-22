@@ -1,52 +1,50 @@
-# Import necessary modules
+
+# Imports necessary modules
 import csv
 import matplotlib.pyplot as plt
 
-# Open the input CSV file
-input_file = open("data_real.csv")
-data_input = csv.reader(input_file)
+# Opens the input CSV file
+imput_file = open("imput/data_real.csv")
+output_file = open("output/filtered_data.csv")
+data_imput = csv.reader(imput_file)
+data_output = csv.reader(output_file)
 
-# Read the header
-header = next(data_input)
-print(header)
+# Initializes lists to store filtered data
+mouse_ID = []
+treatment = []
+experimental_day = []
+counts_live_bacteria_per_wet_g = []
 
-# Initialize lists to store filtered data
-mouse_ids = []
-treatments = []
-days = []
-bacteria_counts = []
+# Filters rows to keep only the measurements in feces and select relevant columns
+for row in data_imput:
+    if row[2] == 'fecal':  # Ensures the row filters by 'sample_type'
+        mouse_ID.append(row[4])  # 'mouse_ID' is the 5th column
+        treatment.append(row[5])  # 'treatment' is the 6th column
+        experimental_day.append(int(row[7]))  # 'experimental_day' is the 8th column
+        counts_live_bacteria_per_wet_g(float(row[8]))  # 'counts_live_bacteria_per_wet_g' is the 9th column
 
-# Filter rows to keep only the measurements in feces and select relevant columns
-for row in data_input:
-    if len(row) >= 9 and row[2] == 'fecal':  # Ensure the row has at least 9 columns and filter by 'sample_type'
-        mouse_ids.append(row[4])  # 'mouse_ID' is the 5th column
-        treatments.append(row[5])  # 'treatment' is the 6th column
-        days.append(int(row[7]))  # 'experimental_day' is the 8th column
-        bacteria_counts.append(float(row[8]))  # 'counts_live_bacteria_per_wet_g' is the 9th column
+# Closes the imput file
+imput_file.close()
+output_file.close()
 
-# Close the input file
-input_file.close()
-
-# Open the existing filtered data CSV file in append mode
+# Opens the existing filtered data CSV file in append mode
 with open('output/filtered_data.csv', 'a', newline='') as output_file:
     writer = csv.writer(output_file)
-    for i in range(len(mouse_ids)):
-        writer.writerow([mouse_ids[i], treatments[i], days[i], bacteria_counts[i]])
+    for i in range(len(mouse_ID)):
+        writer.writerow([mouse_ID[i], treatment[i], experimental_day[i], counts_live_bacteria_per_wet_g[i]])
 
-# Generate a line plot for each mouse ID, grouped by treatment
-unique_treatments = set(treatments)
-for treatment in unique_treatments:
+# Generates a line plot for each mouse ID, grouped by treatment
+unique_treatment = set(treatment)
+for treatment in unique_treatment:
     plt.figure()
-    unique_mouse_ids = set(mouse_ids)
-    for mouse_id in unique_mouse_ids:
-        x = [days[i] for i in range(len(mouse_ids)) if mouse_ids[i] == mouse_id and treatments[i] == treatment]
-        y = [bacteria_counts[i] for i in range(len(mouse_ids)) if mouse_ids[i] == mouse_id and treatments[i] == treatment]
-        if x:
-            plt.plot(x, y, label=f'Souris {mouse_id}')
-    
-    plt.title(f'Traitement: {treatment}')
-    plt.xlabel('Jour')
-    plt.ylabel('Quantité de Bactéries Vivantes par Gramme Humide')
-    plt.legend()
-    plt.savefig(f'images/plot_treatment_{treatment}.png')
-    plt.show()
+    unique_mouse_ID = set(mouse_ID)
+    for mouse_ID in unique_mouse_ID:
+        x = [experimental_day[i] for i in range(len(mouse_ID)) if mouse_ID[i] == mouse_ID and treatment[i] == treatment]
+        y = [counts_live_bacteria_per_wet_g[i] for i in range(len(mouse_ID)) if mouse_ID[i] == mouse_ID and treatment[i] == treatment]
+        plt.plot(x, y, label=f'Souris {mouse_ID}')
+        plt.title(f'Traitement: {treatment}')
+        plt.xlabel('Jour')
+        plt.ylabel('Quantité de Bactéries Vivantes par Gramme Humide')
+        plt.legend()
+        plt.savefig(f'plot_treatment_{treatment}.png')
+        plt.show()
